@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Ticket>
+
+<h2 style="color:aliceblue;">Tickets</h2>
+
+<div style="display: block">
+    <a href="/Ticket/InsertTicket/">Create A New Ticket</a>
+</div>
+<table class="table" style="color:aliceblue">
+    <thead class="thead-light">
+        <tr>
+            <th>Ticket ID</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th></th>
+            <th>On Sale</th>
+            <th>Stock Level</th>
+        </tr>
+    </thead>
+
+
+
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td><a href=/Product/ViewProduct/@product.ProductID>@product.ProductID</a></td>
+            <td>@product.Name</td>
+            <td>@product.Price</td>
+            <td>@product.CategoryID</td>
+            <td>@product.OnSale</td>
+            <td>@product.StockLevel</td>
+        </tr>
+    }
+</table>
+
