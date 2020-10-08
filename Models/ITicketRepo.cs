@@ -12,5 +12,8 @@ namespace BugTracker.Models
         public void UpdateTicket(Ticket ticket);
         public void InsertTicket(Ticket ticketToCreate);
         public void DeleteTicket(Ticket ticket);
+        public IEnumerable<Ticket> SearchTickets(string searchTerm);
+        public void AttachImage(Ticket ticket);
+        
     }
 }

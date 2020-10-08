@@ -1,7 +1,10 @@
 ﻿using BugTracker.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
@@ -35,14 +38,15 @@ namespace BugTracker.Controllers
         {
             Ticket ticket = repo.GetTicket(id);
 
-            if(ticket == null)
+            if (ticket == null)
             {
                 return View("TicketNotFound");
             }
 
             return View(ticket);
         }
-        //Why are these 2 separate?
+        /*^ is like the Console.ReadLine()--it's getting the data from the user via the View. v is then taking that
+        input back to the model and doing something with it*/
         public IActionResult UpdateTicketToDatabase(Ticket ticket)
         {
             repo.UpdateTicket(ticket);
@@ -50,22 +54,17 @@ namespace BugTracker.Controllers
             return RedirectToAction("ViewTicket", new { id = ticket.TicketId });
         }
 
-        public IActionResult NewTicket()
+        public IActionResult InsertTicket()
         {
-           /*Ask Whit about this, it's not how they did it for Product in that earlier ASP.NET MVC project, or I may 
-            * have done it wrong there. Also I changed the Ticket constructor to require Title and Description when
-            * a new Ticket is created, since title and description aren't nullable in the table? Is that right?
-            */
             var ticket = new Ticket();
             repo.InsertTicket(ticket);
-                    
+
             return View(ticket);
         }
-        /*What is InsertTicketToDatabase here for? It looks like it's doing what NewTicket is doing ^ and then immediately 
-         * taking you to a view of ALL the tickets--why?? Won't the "New Ticket" method in the TicketRepo update the 
-         * database with the new ticket? It's executing an INSERT INTO. Can I just have InsertTicket and NewTicket without
-         * InsertTicketToDatabase? 
-        */
+
+        /*^ is like the Console.ReadLine()--it's getting the data from the user via the View. v is then taking that
+        input back to the model and doing something with it*/
+
         public IActionResult InsertTicketToDatabase(Ticket ticketToInsert)
         {
             repo.InsertTicket(ticketToInsert);
@@ -77,6 +76,49 @@ namespace BugTracker.Controllers
         {
             repo.DeleteTicket(ticket);
 
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Search(string searchTerm)
+        {
+            var search = repo.SearchTickets(searchTerm);
+
+            return View(search);
+        }
+
+        public IActionResult UploadButtonClick(IFormFile files, Ticket ticket)
+        {
+            if (files != null)
+            {
+                if (files.Length > 0)
+                {
+                    //Getting FileName
+                    var fileName = Path.GetFileName(files.FileName);
+
+                    //Assigning Unique Filename (Guid)
+                    var myUniqueFileName = Convert.ToString(Guid.NewGuid());
+
+                    //Getting file Extension
+                    var fileExtension = Path.GetExtension(fileName);
+
+                    // concatenating  FileName + FileExtension
+                    var newFileName = String.Concat(myUniqueFileName, fileExtension);
+
+                    // Combines two strings into a path.
+                    var filepath =
+            new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")).Root + $@"{newFileName}";
+
+                    using (FileStream fs = System.IO.File.Create(filepath))
+                    {
+                        files.CopyTo(fs);
+                        fs.Flush();
+                    }
+
+                    ticket.Image = "/images/" + newFileName;
+
+                    repo.AttachImage(ticket);
+                }
+            }
             return RedirectToAction("Index");
         }
     }
