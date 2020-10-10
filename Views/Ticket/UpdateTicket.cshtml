@@ -2,24 +2,42 @@
 
 <h2>Update @Model.Title</h2>
 
-@using (Html.BeginForm("UpdateTicketToDatabase", "Ticket", "Post")){
-<input asp-for="TicketId" type="hidden" value="@Model.TicketId" />
+@using (Html.BeginForm("UpdateTicketToDatabase", "Ticket", "Post"))
+{
+    <input asp-for="TicketId" type="hidden" value="@Model.TicketId" />
 
-<input asp-for="Created" type="hidden" value="@Model.Created" />
+    <input asp-for="Created" type="hidden" value="@Model.Created" />
 
-<input asp-for="Updated" type="hidden" value="@Model.Updated" />
+    <input asp-for="Updated" type="hidden" value="@Model.Updated" />
 
-<label asp-for="Title" class="control-label">Title</label>
+    <input asp-for="Closed" type="hidden" value="@Model.Closed" />
 
-<input type="text" name="Title" class="form-control" value="@Model.Title" />
+    <label asp-for="Title" class="control-label">Title</label>
 
-<label asp-for="Description" class="control-label">Description</label>
+    <input type="text" name="Title" class="form-control" value="@Model.Title" />
 
-<input type="text" name="Description" class="form-control" value="@Model.Description" />
+    <label asp-for="Description" class="control-label">Description</label>
 
-<label asp-for="Priority" class="control-label">Priority</label>
+    <input type="text" name="Description" class="form-control" value="@Model.Description" />
 
-<input type="number" step="1" name="Priority" class="form-control" value="@Model.Priority" />
+    <label asp-for="Priority" class="control-label">Priority</label>
 
-<input type="submit" value="Update Ticket" class="btn btn-primary" />
+    <input type="text" name="Priority" class="form-control" value="@Model.Priority" />
+
+    <label asp-for="UserId" class="control-label">Assigned To</label>
+
+    <input type="text" name="UserId" class="form-control" value="@Model.UserId" />
+
+    <label asp-for="ProjectId" class="control-label">Project</label>
+
+    <input type="text" name="ProjectId" class="form-control" value="@Model.ProjectId" />
+
+    <label asp-for="Status" class="control-label">Status</label>
+    <input type="text" name="Status" class="form-control" value="@Model.Status" />
+
+    <label asp-for="Image" class="control-label">Attachments</label>
+
+    <input type="text" name="Image" class="form-control" value="@Model.Status" />
+
+    <input type="submit" value="Update Ticket" class="btn btn-primary" />
 }

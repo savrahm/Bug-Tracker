@@ -2,59 +2,74 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
-namespace BugTracker.Models
+namespace BugTracker.Models.Repos
 {
-    public class TicketRepo : ITicketRepo
+    public class TicketRepo : IRepo<Ticket>
     {
+        List<Ticket> tickets = new List<Ticket>();
+
         private readonly IDbConnection _conn;
 
         public TicketRepo(IDbConnection conn)
         {
             _conn = conn;
         }
-        public void DeleteTicket(Ticket ticket)
-        {
-            _conn.Execute("DELETE FROM tickets WHERE ticket_id = @id;",
-                new { id = ticket.TicketId });
-        }
 
-        public IEnumerable<Ticket> GetAllTickets()
+        public IEnumerable<Ticket> GetAll()
         {
             return _conn.Query<Ticket>("SELECT * FROM tickets;");
         }
 
-        public Ticket GetTicket(int id)
+        public Ticket GetById(int id)
         {
-            return _conn.QuerySingle<Ticket>("SELECT * FROM tickets WHERE ticket_id = @id;",
-                new { id = id});
+            return _conn.QuerySingle<Ticket>("SELECT * FROM tickets WHERE ticketid = @id;",
+                new { id = id });
         }
 
-        public void InsertTicket(Ticket ticketToCreate)
+        public Ticket Insert(Ticket item)
         {
             _conn.Execute("INSERT INTO tickets (title, descripton, priority, created) VALUES(@title, @description, @priority, @created)",
-                new { title = ticketToCreate.Title, description = ticketToCreate.Description, priority = ticketToCreate.Priority, created = DateTime.Now });
+                 new { title = item.Title, description = item.Description, priority = item.Priority, created = item.Created });
+            return item;
         }
 
-        public void UpdateTicket(Ticket ticket)
+        public IEnumerable<Ticket> Delete(Ticket item)
         {
-            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, updated = @updated status = @status;",
-                new {title = ticket.Title, description = ticket.Description, priority = ticket.Priority, updated = DateTime.Now, status = ticket.Status });
+            _conn.Execute("DELETE FROM tickets WHERE ticketid = @id;",
+                new { id = item.TicketId });
+            return GetAll();
         }
 
-        public IEnumerable<Ticket> SearchTickets(string searchTerm)
+        public Ticket Update(Ticket item)
+        {
+            var current = DateTime.Now;
+
+            _conn.Execute("UPDATE tickets SET ticketid = @ticketid, created = @created, updated = @current, closed = @closed, title = @title, description = @description, priority = @priority, userid = @userid; projectid = @projectid; status = @status, image = @image;",
+                new { ticketid = item.TicketId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, status = item.Status, image = item.File });
+
+            if (item.Status == "Closed")
+            {
+                _conn.Execute("UPDATE tickets SET closed = @current;",
+                    new { closed = item.Closed });
+            }
+
+            return item;
+        }
+
+        public IEnumerable<Ticket> Search(string searchTerm)
         {
             return _conn.Query<Ticket>("SELECT * FROM tickets WHERE NAME LIKE @name;",
                 new { name = "%" + searchTerm + "%" });
         }
 
-        public void AttachImage(Ticket ticket)
+        public void File(Ticket item)
         {
-            _conn.Execute("Update tickets SET Image = @image WHERE ticket_id = @ticket_id",
-                new { image = ticket.Image, ticket_id = ticket.TicketId });
+            _conn.Execute("Update tickets SET file = @file WHERE ticketid = @ticketid",
+                new { file = item.File, ticketid = item.TicketId });
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BugTracker.Models;
+﻿using AspNetCore;
+using BugTracker.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
@@ -56,10 +57,8 @@ namespace BugTracker.Controllers
 
         public IActionResult InsertTicket()
         {
-            var ticket = new Ticket();
-            repo.InsertTicket(ticket);
 
-            return View(ticket);
+            return View();
         }
 
         /*^ is like the Console.ReadLine()--it's getting the data from the user via the View. v is then taking that
@@ -114,7 +113,7 @@ namespace BugTracker.Controllers
                         fs.Flush();
                     }
 
-                    ticket.Image = "/images/" + newFileName;
+                    ticket.File = "/images/" + newFileName;
 
                     repo.AttachImage(ticket);
                 }

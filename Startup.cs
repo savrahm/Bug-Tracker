@@ -28,7 +28,7 @@ namespace BugTracker
         {
             services.AddScoped<IDbConnection>((s) =>
             {
-                IDbConnection conn = new MySqlConnection(Configuration.GetConnectionString("bugtracker"));
+                IDbConnection conn = new MySqlConnection(Configuration.GetConnectionString("DefaultConnection"));
                 conn.Open();
                 return conn;
             });
@@ -41,6 +41,8 @@ namespace BugTracker
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseBrowserLink();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

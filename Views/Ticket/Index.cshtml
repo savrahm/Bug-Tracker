@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<Ticket>
 
-<h2 style="color:aliceblue;">Tickets</h2>
+<h2>Tickets</h2>
 
 <div style="display: block">
     <a href="/Ticket/InsertTicket/">Create A New Ticket</a>
 </div>
-<table class="table" style="color:aliceblue">
+<table class="table">
     <thead class="thead-light">
         <tr>
             <th>Ticket ID</th>
@@ -17,6 +17,8 @@
             <th>Status</th>
         </tr>
     </thead>
+
+    
 
     @foreach (var ticket in Model)
     {
