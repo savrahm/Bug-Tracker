@@ -1,15 +1,26 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BugTracker.Models.Repos
 {
-    public class ProjectRepo : IRepo<Project>
+    public class ProjectRepo
     {
+        private readonly IDbConnection _conn;
+
+        public ProjectRepo(IDbConnection conn)
+        {
+            _conn = conn;
+        }
+
         public IEnumerable<Project> Delete(Project item)
         {
-            throw new NotImplementedException();
+            _conn.Execute("DELETE FROM projects WHERE projectid = @id;",
+                new { id = item.ProjectId });
+            return GetAll();
         }
 
         public void File(Project item)
@@ -19,25 +30,50 @@ namespace BugTracker.Models.Repos
 
         public IEnumerable<Project> GetAll()
         {
-            throw new NotImplementedException();
+            return _conn.Query<Project>("SELECT * FROM projects;");
         }
 
         public Project GetById(int id)
         {
-            throw new NotImplementedException();
+            return _conn.QuerySingle<Project>("SELECT * FROM projects WHERE projectid = @id;",
+                new { id = id });
         }
 
         public Project Insert(Project item)
         {
-            throw new NotImplementedException();
+            _conn.Execute("INSERT INTO projects (title, descripton, priority, created) VALUES(@title, @description, @priority, @created)",
+                 new { title = item.Title, description = item.Description, priority = item.Priority, created = item.Created });
+            return item;
         }
 
         public IEnumerable<Project> Search(string searchTerm)
         {
-            throw new NotImplementedException();
+            return _conn.Query<Project>("SELECT * FROM projects WHERE title LIKE @title;",
+                new { title = "%" + searchTerm + "%" });
         }
 
         public Project Update(Project item)
+        {
+            var current = DateTime.Now;
+
+            _conn.Execute("UPDATE projects SET projectid = @projectid, created = @created, updated = @current, closed = @closed, title = @title, description = @description, priority = @priority, userid = @userid; status = @status, file = @file;",
+                new { ticketid = item.ProjectId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, status = item.Status, file = item.File });
+
+            if (item.Status == "Closed")
+            {
+                _conn.Execute("UPDATE Projects SET closed = @current;",
+                    new { closed = item.Closed });
+            }
+
+            return item;
+        }
+
+        public Project AssignProject()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Project> GetProjects()
         {
             throw new NotImplementedException();
         }

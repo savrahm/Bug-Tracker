@@ -1,14 +1,9 @@
-﻿using AspNetCore;
-using BugTracker.Models;
+﻿using BugTracker.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
 
 namespace BugTracker.Controllers
 {
@@ -23,21 +18,21 @@ namespace BugTracker.Controllers
 
         public IActionResult Index()
         {
-            var tickets = repo.GetAllTickets();
+            var tickets = repo.GetAll();
 
             return View(tickets);
         }
 
         public IActionResult ViewTicket(int id)
         {
-            var ticket = repo.GetTicket(id);
+            var ticket = repo.GetById(id);
 
             return View(ticket);
         }
 
         public IActionResult UpdateTicket(int id)
         {
-            Ticket ticket = repo.GetTicket(id);
+            Ticket ticket = repo.GetById(id);
 
             if (ticket == null)
             {
@@ -46,41 +41,37 @@ namespace BugTracker.Controllers
 
             return View(ticket);
         }
-        /*^ is like the Console.ReadLine()--it's getting the data from the user via the View. v is then taking that
-        input back to the model and doing something with it*/
+        
         public IActionResult UpdateTicketToDatabase(Ticket ticket)
         {
-            repo.UpdateTicket(ticket);
+            repo.Update(ticket);
 
             return RedirectToAction("ViewTicket", new { id = ticket.TicketId });
         }
 
         public IActionResult InsertTicket()
         {
-
-            return View();
+            var ticket = repo.AssignProject();
+            return View(ticket);
         }
-
-        /*^ is like the Console.ReadLine()--it's getting the data from the user via the View. v is then taking that
-        input back to the model and doing something with it*/
 
         public IActionResult InsertTicketToDatabase(Ticket ticketToInsert)
         {
-            repo.InsertTicket(ticketToInsert);
+            repo.Insert(ticketToInsert);
 
             return RedirectToAction("Index");
         }
 
         public IActionResult DeleteTicket(Ticket ticket)
         {
-            repo.DeleteTicket(ticket);
+            repo.Delete(ticket);
 
             return RedirectToAction("Index");
         }
 
         public IActionResult Search(string searchTerm)
         {
-            var search = repo.SearchTickets(searchTerm);
+            var search = repo.Search(searchTerm);
 
             return View(search);
         }
@@ -105,7 +96,7 @@ namespace BugTracker.Controllers
 
                     // Combines two strings into a path.
                     var filepath =
-            new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images")).Root + $@"{newFileName}";
+            new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")).Root + $@"{newFileName}";
 
                     using (FileStream fs = System.IO.File.Create(filepath))
                     {
@@ -113,9 +104,9 @@ namespace BugTracker.Controllers
                         fs.Flush();
                     }
 
-                    ticket.File = "/images/" + newFileName;
+                    ticket.File = "/files/" + newFileName;
 
-                    repo.AttachImage(ticket);
+                    repo.File(ticket);
                 }
             }
             return RedirectToAction("Index");

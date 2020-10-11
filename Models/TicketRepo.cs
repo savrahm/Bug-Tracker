@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Models.Repos
 {
-    public class TicketRepo : IRepo<Ticket>
+    public class TicketRepo : ITicketRepo
     {
-        List<Ticket> tickets = new List<Ticket>();
 
         private readonly IDbConnection _conn;
 
@@ -27,12 +26,12 @@ namespace BugTracker.Models.Repos
         public Ticket GetById(int id)
         {
             return _conn.QuerySingle<Ticket>("SELECT * FROM tickets WHERE ticketid = @id;",
-                new { id = id });
+                new { id });
         }
 
         public Ticket Insert(Ticket item)
         {
-            _conn.Execute("INSERT INTO tickets (title, descripton, priority, created) VALUES(@title, @description, @priority, @created)",
+            _conn.Execute("INSERT INTO tickets (title, description, priority, created) VALUES(@title, @description, @priority, @created);",
                  new { title = item.Title, description = item.Description, priority = item.Priority, created = item.Created });
             return item;
         }
@@ -44,32 +43,60 @@ namespace BugTracker.Models.Repos
             return GetAll();
         }
 
-        public Ticket Update(Ticket item)
+        public void Update(Ticket item)
         {
-            var current = DateTime.Now;
 
-            _conn.Execute("UPDATE tickets SET ticketid = @ticketid, created = @created, updated = @current, closed = @closed, title = @title, description = @description, priority = @priority, userid = @userid; projectid = @projectid; status = @status, image = @image;",
-                new { ticketid = item.TicketId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, status = item.Status, image = item.File });
 
-            if (item.Status == "Closed")
-            {
-                _conn.Execute("UPDATE tickets SET closed = @current;",
-                    new { closed = item.Closed });
-            }
+            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, userid = @userid, projectid = @projectid, status = @status, file = @file WHERE ticketid = @ticketid;",
+                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, status = item.Status, file = item.File, ticketid = item.TicketId });
 
-            return item;
+            //if (item.Status == "Closed")
+            //{
+            //    _conn.Execute("UPDATE tickets SET closed = @current;",
+            //        new { closed = item.Closed });
+            //}
+
+           
         }
 
         public IEnumerable<Ticket> Search(string searchTerm)
         {
-            return _conn.Query<Ticket>("SELECT * FROM tickets WHERE NAME LIKE @name;",
-                new { name = "%" + searchTerm + "%" });
+            return _conn.Query<Ticket>("SELECT * FROM tickets WHERE title LIKE @title;",
+                new { title = "%" + searchTerm + "%" });
         }
 
         public void File(Ticket item)
         {
             _conn.Execute("Update tickets SET file = @file WHERE ticketid = @ticketid",
                 new { file = item.File, ticketid = item.TicketId });
+        }
+
+        public IEnumerable<Project> GetOther()
+        {
+            return _conn.Query<Project>("SELECT title FROM projects;");
+        }
+
+        public Ticket AssignOther()
+        {
+            var projectList = GetOther();
+            var ticket = new Ticket();
+            ticket.Projects = projectList;
+
+            return ticket;
+        }
+
+        public IEnumerable<Project> GetProjects()
+        {
+            return _conn.Query<Project>("SELECT title FROM projects;");
+        }
+
+        public Ticket AssignProject()
+        {
+            var projectList = GetProjects();
+            var ticket = new Ticket();
+            ticket.Projects = projectList;
+
+            return ticket;
         }
     }
 }

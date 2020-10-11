@@ -10,14 +10,14 @@
     <input type="text" name="Description" class="form-control" value="" />
     <label asp-for="Priority" class="control-label">Priority</label>
     <input type="number" step="1" name="Priority" class="form-control" value="" />
-    @*<div class="form-group">
+    <div class="form-group">
         <label for="">Which project should the ticket belong to?</label>
         <select class="form-control" name="ProjectId" value="">
-            @foreach (var project in Model.Project)
+            @foreach (var project in Model.Projects)
             {
                 <option value="@project.ProjectId">@project.ProjectId @project.Title</option>
             }
         </select>
-    </div>*@
+    </div>
     <input type="submit" value="Create Ticket" class="btn btn-primary" />
 }
