@@ -30,6 +30,7 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
+        //is this even doing anything? Update this comment if/when you find anything using this UpdateTicket method
         public IActionResult UpdateTicket(int id)
         {
             Ticket ticket = repo.GetById(id);

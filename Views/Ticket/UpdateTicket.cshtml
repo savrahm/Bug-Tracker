@@ -1,16 +1,10 @@
 ﻿@model Ticket
 
-<h2>Update @Model.Title</h2>
+<h2>Update Ticket: "@Model.Title"</h2>
 
 @using (Html.BeginForm("UpdateTicketToDatabase", "Ticket", "Post"))
 {
     <input asp-for="TicketId" type="hidden" value="@Model.TicketId" />
-
-    <input asp-for="Created" type="hidden" value="@Model.Created" />
-
-    <input asp-for="Updated" type="hidden" value="@Model.Updated" />
-
-    <input asp-for="Closed" type="hidden" value="@Model.Closed" />
 
     <label asp-for="Title" class="control-label">Title</label>
 
