@@ -3,7 +3,7 @@
 @using (Html.BeginForm("InsertTicketToDatabase", "Ticket", "Post")){ 
     <input asp-for="TicketId" type="hidden" value="" />
     <input asp-for="Created" type="hidden" value="" />
-    <input asp-for="Status" type="hidden" value="" />
+    <input asp-for="Stage" type="hidden" value="" />
     <label asp-for="Title" class="control-label">Title</label>
     <input type="text" name="Title" class="form-control" value="" />
     <label asp-for="Description" class="control-label">Description</label>

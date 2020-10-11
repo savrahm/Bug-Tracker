@@ -19,9 +19,9 @@ namespace BugTracker.Models
         public string Priority { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
-        public DateTime Closed { get; set; }
+        public DateTime Closed { get; set; } //TODO: try to get this one working https://www.mysqltutorial.org/mysql-if-statement/
         public int UserId { get; set; }
-        public string Status { get; set; }
+        public string Stage { get; set; }
         public FileStream File { get; set; }
     }
 }

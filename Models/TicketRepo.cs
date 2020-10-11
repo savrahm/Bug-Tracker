@@ -45,18 +45,14 @@ namespace BugTracker.Models.Repos
 
         public void Update(Ticket item)
         {
+            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, userid = @userid, projectid = @projectid, stage = @stage, file = @file WHERE ticketid = @ticketid;",
+                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, stage = item.Stage, file = item.File, ticketid = item.TicketId });
 
-
-            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, userid = @userid, projectid = @projectid, status = @status, file = @file WHERE ticketid = @ticketid;",
-                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, status = item.Status, file = item.File, ticketid = item.TicketId });
-
-            //if (item.Status == "Closed")
-            //{
-            //    _conn.Execute("UPDATE tickets SET closed = @current;",
-            //        new { closed = item.Closed });
-            //}
-
-           
+            if (item.Stage == "Closed")
+            {
+                _conn.Execute("UPDATE tickets SET closed = CURRENT_TIMESTAMP;",
+                    new { closed = item.Closed });
+            }
         }
 
         public IEnumerable<Ticket> Search(string searchTerm)

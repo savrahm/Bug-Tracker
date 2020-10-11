@@ -22,7 +22,7 @@ namespace BugTracker.Models
         public DateTime? Closed { get; set; } = null;
         public int? UserId { get; set; } = null;
         public int? ProjectId { get; set; } = null;
-        public string Status { get; set; } = "New";
+        public string Stage { get; set; }
         public string File { get; set; } = null;
         /*TODO: Figure out how to implement file storing. Try https://www.c-sharpcorner.com/UploadFile/deepak.sharma00/how-to-save-images-in-mysql-database-using-C-Sharp/
          * or https://stackoverflow.com/questions/13047099/read-mediumblob-data-type-from-mysql-in-c-sharp 

@@ -57,9 +57,9 @@ namespace BugTracker.Models.Repos
             var current = DateTime.Now;
 
             _conn.Execute("UPDATE projects SET projectid = @projectid, created = @created, updated = @current, closed = @closed, title = @title, description = @description, priority = @priority, userid = @userid; status = @status, file = @file;",
-                new { ticketid = item.ProjectId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, status = item.Status, file = item.File });
+                new { ticketid = item.ProjectId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, status = item.Stage, file = item.File });
 
-            if (item.Status == "Closed")
+            if (item.Stage == "Closed")
             {
                 _conn.Execute("UPDATE Projects SET closed = @current;",
                     new { closed = item.Closed });
