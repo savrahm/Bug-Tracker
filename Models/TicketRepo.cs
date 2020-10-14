@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -31,8 +32,8 @@ namespace BugTracker.Models.Repos
 
         public Ticket Insert(Ticket item)
         {
-            _conn.Execute("INSERT INTO tickets (title, description, priority, created) VALUES(@title, @description, @priority, @created);",
-                 new { title = item.Title, description = item.Description, priority = item.Priority, created = item.Created });
+            _conn.Execute("INSERT INTO tickets (title, description, projectid, type, priority, created, userid) VALUES(@title, @description, @projectid, @type, @priority, @created, @userid);",
+                 new { title = item.Title, description = item.Description, projectid = item.ProjectId, type = item.Type, priority = item.Priority, created = item.Created, userid = item.UserId });
             return item;
         }
 
@@ -43,17 +44,6 @@ namespace BugTracker.Models.Repos
             return GetAll();
         }
 
-        public void Update(Ticket item)
-        {
-            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, userid = @userid, projectid = @projectid, stage = @stage, file = @file WHERE ticketid = @ticketid;",
-                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, stage = item.Stage, file = item.File, ticketid = item.TicketId });
-
-            if (item.Stage == "Closed")
-            {
-                _conn.Execute("UPDATE tickets SET closed = CURRENT_TIMESTAMP;",
-                    new { closed = item.Closed });
-            }
-        }
 
         public IEnumerable<Ticket> Search(string searchTerm)
         {
@@ -66,27 +56,24 @@ namespace BugTracker.Models.Repos
             _conn.Execute("Update tickets SET file = @file WHERE ticketid = @ticketid",
                 new { file = item.File, ticketid = item.TicketId });
         }
-
-        public IEnumerable<Project> GetOther()
+        public void Update(Ticket item)
         {
-            return _conn.Query<Project>("SELECT title FROM projects;");
+            _conn.Execute("UPDATE tickets SET title = @title, description = @description, priority = @priority, userid = @userid, projectid = @projectid, stage = @stage, file = @file WHERE ticketid = @ticketid;",
+                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, projectid = item.ProjectId, stage = item.Stage, file = item.File, ticketid = item.TicketId });
+
+            if (item.Stage == "Closed")
+            {
+                _conn.Execute("UPDATE tickets SET closed = CURRENT_TIMESTAMP WHERE ticketid = @ticketid;",
+                    new { closed = item.Closed, ticketid = item.TicketId });
+            }
         }
 
-        public Ticket AssignOther()
+        public List<Project> GetProjects()
         {
-            var projectList = GetOther();
-            var ticket = new Ticket();
-            ticket.Projects = projectList;
-
-            return ticket;
+            return _conn.Query<Project>("SELECT * FROM projects;").ToList();
         }
 
-        public IEnumerable<Project> GetProjects()
-        {
-            return _conn.Query<Project>("SELECT title FROM projects;");
-        }
-
-        public Ticket AssignProject()
+        public Ticket AssignProjectsProp()
         {
             var projectList = GetProjects();
             var ticket = new Ticket();
@@ -94,5 +81,13 @@ namespace BugTracker.Models.Repos
 
             return ticket;
         }
+
+
+        /*
+         * "Select A Project" OnClick (Project Index View) in modal, ProjectRepo.GetById
+         * 
+         * 
+         * 
+         */
     }
 }

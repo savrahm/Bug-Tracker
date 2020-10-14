@@ -1,0 +1,25 @@
+﻿@model Project
+<h2>New Project</h2>
+@using (Html.BeginForm("InsertProjectToDatabase", "Project", "Post"))
+{
+    <input asp-for="ProjectId" type="hidden" value="" />
+    <input asp-for="Created" type="hidden" value="" />
+    <input asp-for="Stage" type="hidden" value="" />
+    <label asp-for="Title" class="control-label">Title</label>
+    <input type="text" name="Title" class="form-control" value="" />
+    <label asp-for="Description" class="control-label">Description</label>
+    <input type="text" name="Description" class="form-control" value="" />
+    <label asp-for="Priority" class="control-label">Priority</label>
+    <input type="number" step="1" name="Priority" class="form-control" value="" />
+    <div class="form-group">
+        <label for="">Which existing tickets should be linked to this project?</label>
+        <select class="form-control" name="ProjectId" value="" multiple>
+            <option>N/A</option>
+            @foreach (var ticket in Model.Tickets)
+            {
+                <option value="@ticket.TicketId">@ticket.TicketId @ticket.Title</option>
+            }
+        </select>
+    </div>
+    <input type="submit" value="Create Project" class="btn btn-primary" />
+}

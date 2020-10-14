@@ -23,5 +23,6 @@ namespace BugTracker.Models
         public int UserId { get; set; }
         public string Stage { get; set; }
         public FileStream File { get; set; }
+        public List<Ticket> Tickets { get; set; }
     }
 }

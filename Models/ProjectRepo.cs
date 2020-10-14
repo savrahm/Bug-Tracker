@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Models.Repos
 {
-    public class ProjectRepo
+    public class ProjectRepo : IProjectRepo
     {
         private readonly IDbConnection _conn;
 
@@ -36,12 +36,12 @@ namespace BugTracker.Models.Repos
         public Project GetById(int id)
         {
             return _conn.QuerySingle<Project>("SELECT * FROM projects WHERE projectid = @id;",
-                new { id = id });
+                new { id });
         }
 
         public Project Insert(Project item)
         {
-            _conn.Execute("INSERT INTO projects (title, descripton, priority, created) VALUES(@title, @description, @priority, @created)",
+            _conn.Execute("INSERT INTO projects (title, description, priority, created) VALUES(@title, @description, @priority, @created)",
                  new { title = item.Title, description = item.Description, priority = item.Priority, created = item.Created });
             return item;
         }
@@ -54,28 +54,30 @@ namespace BugTracker.Models.Repos
 
         public Project Update(Project item)
         {
-            var current = DateTime.Now;
-
-            _conn.Execute("UPDATE projects SET projectid = @projectid, created = @created, updated = @current, closed = @closed, title = @title, description = @description, priority = @priority, userid = @userid; status = @status, file = @file;",
-                new { ticketid = item.ProjectId, created = item.Created, updated = item.Updated, closed = item.Closed, title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, status = item.Stage, file = item.File });
+            _conn.Execute("UPDATE projects SET title = @title, description = @description, priority = @priority, userid = @userid; status = @status, file = @file WHERE projectid = @projectid;",
+                new { title = item.Title, description = item.Description, priority = item.Priority, userid = item.UserId, status = item.Stage, file = item.File, projectid = item.ProjectId });
 
             if (item.Stage == "Closed")
             {
-                _conn.Execute("UPDATE Projects SET closed = @current;",
-                    new { closed = item.Closed });
+                _conn.Execute("UPDATE projects SET closed = CURRENT_TIMESTAMP WHERE projectid = @projectid;",
+                    new { closed = item.Closed, projectid = item.ProjectId });
             }
 
             return item;
         }
 
-        public Project AssignProject()
+        public List<Ticket> GetTickets()
         {
-            throw new NotImplementedException();
+            return _conn.Query<Ticket>("SELECT * FROM tickets;").ToList();
         }
 
-        public IEnumerable<Project> GetProjects()
+        public Project AssignTicketsProp()
         {
-            throw new NotImplementedException();
+            var ticketList = GetTickets();
+            var project = new Project();
+            project.Tickets = ticketList;
+
+            return project;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace BugTracker.Models
         IEnumerable<Ticket> Delete(Ticket ticket);
         IEnumerable<Ticket> Search(string searchTerm);
         void File(Ticket ticket);
-        IEnumerable<Project> GetProjects();
-        Ticket AssignProject();
+        List<Project> GetProjects();
+        Ticket AssignProjectsProp();
     }
 }

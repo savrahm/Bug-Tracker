@@ -27,6 +27,23 @@ namespace BugTracker.Models
         /*TODO: Figure out how to implement file storing. Try https://www.c-sharpcorner.com/UploadFile/deepak.sharma00/how-to-save-images-in-mysql-database-using-C-Sharp/
          * or https://stackoverflow.com/questions/13047099/read-mediumblob-data-type-from-mysql-in-c-sharp 
          */
-        public IEnumerable<Project> Projects { get; set; }
+        public List<Project> Projects { get; set; }
+        public string Type { get; set; }
+
+
+        
+        /* 
+         * Console.WriteLine("Pick a project")
+         * 
+         * foreach(var proj in ticket.Projects)
+         * {
+         *      Console.WriteLine($"{proj.Projectid} : {proj.Title}");
+         * }
+         * 
+         * Project rightProject = (Project)Console.ReadLine();
+         * 
+         * ticket.ProjectId = rightProject.ProjectId;
+        
+        */
     }
 }

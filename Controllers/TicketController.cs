@@ -30,10 +30,15 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
-        //is this even doing anything? Update this comment if/when you find anything using this UpdateTicket method
+        //is this even doing anything? Update: Yes--it's being called for the "Update Ticket" button in the ViewTicket
         public IActionResult UpdateTicket(int id)
         {
+            //var projectList = GetProjects();
+            //var ticket = new Ticket();
+            //ticket.Projects = projectList;
+
             Ticket ticket = repo.GetById(id);
+            ticket.Projects = repo.GetProjects();
 
             if (ticket == null)
             {
@@ -45,6 +50,7 @@ namespace BugTracker.Controllers
         
         public IActionResult UpdateTicketToDatabase(Ticket ticket)
         {
+            
             repo.Update(ticket);
 
             return RedirectToAction("ViewTicket", new { id = ticket.TicketId });
@@ -52,7 +58,7 @@ namespace BugTracker.Controllers
 
         public IActionResult InsertTicket()
         {
-            var ticket = repo.AssignProject();
+            var ticket = repo.AssignProjectsProp();
             return View(ticket);
         }
 
@@ -76,6 +82,7 @@ namespace BugTracker.Controllers
 
             return View(search);
         }
+
 
         public IActionResult UploadButtonClick(IFormFile files, Ticket ticket)
         {

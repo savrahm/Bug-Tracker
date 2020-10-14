@@ -1,38 +1,83 @@
 ﻿@model Ticket
 
 <h2>Update Ticket: "@Model.Title"</h2>
+<br />
+<br />
+<br />
 
 @using (Html.BeginForm("UpdateTicketToDatabase", "Ticket", "Post"))
 {
-    <input asp-for="TicketId" type="hidden" value="@Model.TicketId" />
+    <div class="form-group">
 
-    <label asp-for="Title" class="control-label">Title</label>
+        <input asp-for="TicketId" type="hidden" value="@Model.TicketId" />
 
-    <input type="text" name="Title" class="form-control" value="@Model.Title" />
 
-    <label asp-for="Description" class="control-label">Description</label>
+        <label asp-for="Title" class="control-label">Title</label>
 
-    <input type="text" name="Description" class="form-control" value="@Model.Description" />
+        <input type="text" name="Title" class="form-control" value="@Model.Title">
 
-    <label asp-for="Priority" class="control-label">Priority</label>
+    </div>
+    <div class="form-group">
 
-    <input type="text" name="Priority" class="form-control" value="@Model.Priority" />
 
-    <label asp-for="UserId" class="control-label">Assigned To</label>
+        <label asp-for="Description" class="control-label">Description</label>
 
-    <input type="text" name="UserId" class="form-control" value="@Model.UserId" />
+        <input type="text" name="Description" class="form-control" value="@Model.Description">
 
-    <label asp-for="ProjectId" class="control-label">Project</label>
+    </div>
+    <div class="form-group">
 
-    <input type="text" name="ProjectId" class="form-control" value="@Model.ProjectId" />
+        <label asp-for="Priority" class="control-label">Priority</label>
 
-    <label asp-for="Stage" class="control-label">Status</label>
-    
-    <input type="text" name="Stage" class="form-control" value="@Model.Stage" />
+        <select name="Priority" class="form-control" value="@Model.Priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Severe">Severe</option>
+        </select>
 
-    <label asp-for="File" class="control-label">Attachments</label>
+    </div>
+    <div class="form-group">
 
-    <input type="text" name="File" class="form-control" value="@Model.File" />
+        <label asp-for="UserId" class="control-label">Assigned To</label>
 
-    <input type="submit" value="Update Ticket" class="btn btn-primary" />
+        <input type="text" name="UserId" class="form-control" value="@Model.UserId" />
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProjectId" class="control-label">Which project should this ticket belong to?</label>
+        <select class="form-control" name="ProjectId" value="@Model.ProjectId">
+            <option>N/A</option>
+            @foreach (var project in Model.Projects)
+            {
+                <option value="@project.ProjectId">@project.ProjectId : @project.Title</option>
+            }
+        </select>
+    </div>
+        
+    <div class="form-group">
+
+        <label asp-for="Stage" class="control-label">Status</label>
+
+        <select name="Stage" class="form-control" value="@Model.Stage">
+                <option value="New">New</option>
+                <option value="Backlogged">Backlogged</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Closed">Closed</option>
+        </select>
+        
+    </div>
+    <div class="form-group">
+
+        <label asp-for="File" class="control-label">Attachments</label>
+
+        <input type="text" name="File" class="form-control" value="@Model.File" multiple>
+
+    </div>
+    <div class="form-group">
+
+        <input type="submit" value="Update Ticket" class="btn btn-primary" />
+
+    </div>
 }

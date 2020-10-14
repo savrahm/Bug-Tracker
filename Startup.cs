@@ -35,6 +35,7 @@ namespace BugTracker
             });
 
             services.AddTransient<ITicketRepo, TicketRepo>();
+            services.AddTransient<IProjectRepo, ProjectRepo>();
             
             services.AddControllersWithViews();
         }

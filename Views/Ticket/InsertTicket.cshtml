@@ -1,23 +1,48 @@
 ﻿@model Ticket
 <h2>New Ticket</h2>
-@using (Html.BeginForm("InsertTicketToDatabase", "Ticket", "Post")){ 
-    <input asp-for="TicketId" type="hidden" value="" />
-    <input asp-for="Created" type="hidden" value="" />
-    <input asp-for="Stage" type="hidden" value="" />
+@using (Html.BeginForm("InsertTicketToDatabase", "Ticket", "Post"))
+{
     <label asp-for="Title" class="control-label">Title</label>
-    <input type="text" name="Title" class="form-control" value="" />
+    <input type="text" name="Title" class="form-control" value="@Model.Title" />
     <label asp-for="Description" class="control-label">Description</label>
-    <input type="text" name="Description" class="form-control" value="" />
-    <label asp-for="Priority" class="control-label">Priority</label>
-    <input type="number" step="1" name="Priority" class="form-control" value="" />
+    <input type="text" name="Description" class="form-control" value="@Model.Description" />
+
     <div class="form-group">
-        <label for="">Which project should the ticket belong to?</label>
-        <select class="form-control" name="ProjectId" value="">
+
+        <label asp-for="Type" class="control-label">Ticket Type</label>
+
+        <select name="Type" class="form-control" value="@Model.Type">
+            <option>Bug</option>
+            <option>Design Improvement Suggestion</option>
+            <option>Feature Request</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="Priority" class="control-label">Priority</label>
+
+        <select name="Priority" class="form-control" value="@Model.Priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Severe">Severe</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProjectId" class="control-label">Which project should this ticket belong to?</label>
+        <select class="form-control" name="ProjectId" value="@Model.ProjectId">
+            <option>N/A</option>
             @foreach (var project in Model.Projects)
             {
-                <option value="@project.ProjectId">@project.ProjectId @project.Title</option>
+                <option value="@project.ProjectId">@project.ProjectId : @project.Title </option>
             }
         </select>
     </div>
+
+    <label asp-for="UserId" class="control-label">Who should the ticket be assigned to?</label>
+    <input type="text" name="UserId" class="form-control" value="" />
+
     <input type="submit" value="Create Ticket" class="btn btn-primary" />
 }
