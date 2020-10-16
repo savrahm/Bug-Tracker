@@ -1,36 +1,55 @@
 ﻿@model IEnumerable<Ticket>
 
-<h2>Tickets</h2>
+<div class="card">
+    <h2 class="card-header py-4">Tickets</h2>
+    <div class="card-body">
 
-<div style="display: block">
-    <a href="/Ticket/InsertTicket/">Create A New Ticket</a>
+        <div style="display: block">
+            <a href="/Ticket/InsertTicket/">Create A New Ticket</a>
+        </div>
+        <div id="table">
+
+            <table class="table table-responsive-md text-center table-borderless dataTable dataTables_filter dataTables_paginate dataTables_wrapper">
+                <thead class="thead-light border">
+                    <tr>
+                        <th class="text-center">Ticket ID</th>
+                        <th class="text-center">Title</th>
+                        <th class="text-center">Description</th>
+                        <th class="text-center">Priority</th>
+                        <th class="text-center">Assigned To</th>
+                        <th class="text-center">Project</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+
+
+                <tbody>
+                    @foreach (var ticket in Model)
+                    {
+                        <tr>
+                            <td><a href=/Ticket/ViewTicket/@ticket.TicketId>@ticket.TicketId</a></td>
+                            <td>@ticket.Title</td>
+                            <td>@ticket.Description</td>
+                            <td>@ticket.Priority</td>
+                            <td>@ticket.UserId </td>
+                            <td>@ticket.ProjectId</td>
+                            <td>@ticket.Stage</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
 </div>
-<table class="table">
-    <thead class="thead-light">
-        <tr>
-            <th>Ticket ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Priority</th>
-            <th>Assigned To</th>
-            <th>Project</th>
-            <th>Status</th>
-        </tr>
-    </thead>
+<script>
+$(document).ready(function(){
+    $('#table').dataTable({
+        "pagingType": "simple_numbers"
+    });
+    $('#table tbody').append('<tr>...</tr>'); 
+    $('.dataTables_length').addClass('bs-select');
+});
+    </script>
 
-    
-
-    @foreach (var ticket in Model)
-    {
-        <tr>
-            <td><a href=/Ticket/ViewTicket/@ticket.TicketId>@ticket.TicketId</a></td>
-            <td>@ticket.Title</td>
-            <td>@ticket.Description</td>
-            <td>@ticket.Priority</td>
-            <td>@ticket.UserId </td>
-            <td>@ticket.ProjectId</td>
-            <td>@ticket.Stage</td>
-        </tr>
-    }
-</table>
 

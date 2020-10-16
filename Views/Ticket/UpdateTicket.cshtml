@@ -77,7 +77,23 @@
     </div>
     <div class="form-group">
 
-        <input type="submit" value="Update Ticket" class="btn btn-primary" />
+        <div class="form-group">
+            <label asp-for="File" class="control-label">Attachments</label>
+            <form class="md-form" action="#">
+                <div class="file-field">
+                    <div class="btn btn-primary btn-sm float-left">
+                        <span> Browse </span>
+                        <input type="file" multiple />
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate form-control" type="text" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <br />
+        <br />
+        <input type="submit" value="Update Ticket" class="btn btn-primary align-items-md-start" />
 
     </div>
 }
